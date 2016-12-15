@@ -1,0 +1,2 @@
+mongodb://heroku_d70ng81v:tquljgv0dodvd8tmm6vder1c8v@ds133158.mlab.com:33158/heroku_d70ng81v
+Created mongolab-solid-54444 as MONGODB_URI

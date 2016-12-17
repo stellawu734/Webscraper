@@ -11,15 +11,32 @@
         margin-right: auto;
         padding-top: 5%;
       }
-      #articles {
-        display: inline-block;
-        overflow: auto;
-        width: 60%;
-        height: 700px;
+      #header{
+        width:1280px;
       }
       #notes {
-        float: right;
-        width: 30%;
+        float: left;
+        width: 25%;
+        height:700px;
+        border:black 2px solid;
+      }
+      #articles {
+        overflow: auto;
+        display:inline-block;
+        width: 45%;
+        height: 700px;
+        float:left;
+        border:black solid 2px;
+      }
+      #savednotes{
+        float:left;
+        width:25%;
+        height:700px;
+        border:black 2px solid;    
+      }
+      #inputcontent,
+      #notescontent{
+        display:none;
       }
       textarea, input {
         display: block;
@@ -34,13 +51,31 @@
         height: 200px;
         font-size: 18px;
       }
+
     </style>
   </head>
   <body>
     <div id="wrapper">
+    <div id="header">
       <h1>Job Scraper</h1>
-      <div id="articles"></div>
-      <div id="notes"></div>
+      <button id="button"> Get Me Jobs!</button>
+      </div>
+      <div id="notes">
+      <h1>Write a Note</h1>
+      <div id="inputcontent">
+        <h2 id="notetitle"></h2>
+        <input id='titleinput' name='title' style='width:250px' placeholder='title'>
+        <textarea id='bodyinput' name='body' style='width:250px' placeholder='notes'></textarea>
+        <button id='savenote'>Save Note</button>
+        </div>
+      </div>
+      <div id="articles">
+      </div>
+      <div id="savednotes">
+      <h1>Saved Note</h1>
+      <div id="notescotent">
+      </div>
+      </div>
     </div>
     <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
     <script src="app.js"></script>

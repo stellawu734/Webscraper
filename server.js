@@ -39,7 +39,7 @@ app.use(bodyParser.urlencoded({
 app.use(express.static("public"));
 
 // Database configuration with mongoose
-mongoose.connect("mongodb://localhost/jobscraper");
+mongoose.connect("mongodb://localhost/jobscraper2");
 var db = mongoose.connection;
 
 // Show any mongoose errors
@@ -62,23 +62,34 @@ app.get("/", function(req, res) {
 });
 
 // A GET request to scrape the echojs website
-app.get("/scrape", function(req, res) {
+app.post("/scrape", function(req, res) {
+  console.log('before req');
   // First, we grab the body of the html with request
-  request("https://www.linkedin.com/jobs/search?keywords=Javascript&location=Austin%2C+Texas+Area&trk=jobs_jserp_search_button_execute&orig=JSERP&locationId=us%3A64", function(error, response, html) {
+  request("https://austin.craigslist.org/search/jjj?query=javascript", function(error, response, html) {
+    if (error) console.log(error);
+
+    console.log(response);
+
     // Then, we load that into cheerio and save it to $ for a shorthand selector
     var $ = cheerio.load(html);
+
+    console.log('loaded cheerio', $('li.result-row'));
     // Now, we grab every h2 within an article tag, and do the following:
-    $("a.job-title-link").each(function(i, element) {
+    $('li.result-row').each(function(i, element) {
       // Save an empty result object
       var result = {};
 
       // Add the text and href of every link, and save them as properties of the result object
-      result.title = $(element).children().text()+" at "+$(element).parent().parent().parent().children('.comany-name-line').children().children().text();
-      result.link = $(element).attr("href");
-
-      // Using our Article model, create a new entry
+      result.title = $(element).find("p.result-info").find("a.result-title").text();
+      
+      console.log('title');
+      result.link = "https://austin.craigslist.org"+$(element).find("p.result-info").find("a.result-title").attr("href");
+      // Using our Article 
+      // model, create a new entry 
       // This effectively passes the result object to the entry (and the title and link)
       var entry = new Article(result);
+
+      console.log(entry);
 
       // Now, save that entry to the db
       entry.save(function(err, doc) {
@@ -88,27 +99,18 @@ app.get("/scrape", function(req, res) {
         }
         // Or log the doc
         else {
-          console.log(doc);
+         console.log(doc);
         }
       });
 
     });
   });
   // Tell the browser that we finished scraping the text
-  res.send("Scrape Complete");
-});
-
-// This will get the articles we scraped from the mongoDB
-app.get("/articles", function(req, res) {
-
-
-  // TODO: Finish the route so it grabs all of the articles
-  Article.find({},function(err,data){
-    res.json(data);
+  Article.find({},function(err,doc){
+    res.json(doc);
   })
-
-
 });
+
 
 // This will grab an article by it's ObjectId
 app.get("/articles/:id", function(req, res) {
@@ -127,7 +129,7 @@ app.get("/articles/:id", function(req, res) {
   .exec(function(err,doc){
     if(err) {
       res.send(err);
-    } else {
+    } else {      
       res.send(doc);
     }
   })
@@ -164,7 +166,9 @@ app.post("/articles/:id", function(req, res) {
         }
         // Or send the newdoc to the browser
         else {
-          res.send(newdoc);
+          Note.findById(doc._id,function(err,data){
+            res.send(data);
+          })
         }
       });
     }
@@ -172,6 +176,13 @@ app.post("/articles/:id", function(req, res) {
 
 
 });
+
+app.post("/notes/:id", function(req, res) {
+  console.log(req.params.id);
+  Note.findById(req.params.id,function(err,note){
+    note.remove();
+  });
+})
 
 
 // Listen on port 3000

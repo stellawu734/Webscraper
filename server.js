@@ -39,7 +39,7 @@ app.use(bodyParser.urlencoded({
 app.use(express.static("public"));
 
 // Database configuration with mongoose
-mongoose.connect("mongodb://localhost/jobscraper3");
+mongoose.connect("mongodb://heroku_d70ng81v:tquljgv0dodvd8tmm6vder1c8v@ds133158.mlab.com:33158/heroku_d70ng81v");
 var db = mongoose.connection;
 
 // Show any mongoose errors

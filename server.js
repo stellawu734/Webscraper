@@ -106,7 +106,7 @@ app.post("/scrape", function(req, res) {
     });
   });
   // Tell the browser that we finished scraping the text
-  Article.find({},function(err,doc){
+  Article.find({}).exec(function(err,doc){
     res.json(doc);
   })
 });
@@ -179,7 +179,7 @@ app.post("/articles/:id", function(req, res) {
 
 app.post("/notes/:id", function(req, res) {
   console.log(req.params.id);
-  Note.findById(req.params.id,function(err,note){
+  Note.findById(req.params.id).exec(function(err,note){
     note.remove();
   });
 })
